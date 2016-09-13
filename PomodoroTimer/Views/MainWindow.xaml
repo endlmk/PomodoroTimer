@@ -3,8 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="350" Width="525">
+        Title="{Binding Title}" Height="350" Width="525"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto">
     <Grid>
-        <TextBlock Text="25:00"/>
+        <TextBlock Text="25:00" FontSize="50" Margin="199,83,199,182"/>
+        <Button x:Name="button" Content="Start" HorizontalAlignment="Left" Margin="168,192,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="button_Copy" Content="Resume" HorizontalAlignment="Left" Margin="277,192,0,0" VerticalAlignment="Top" Width="75"/>
     </Grid>
 </Window>
