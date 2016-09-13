@@ -1,4 +1,12 @@
 ﻿using Prism.Mvvm;
+using PomodoroTimer.Models;
+using Microsoft.Practices.Unity;
+using System.Reactive.Concurrency;
+using Prism.Commands;
+using Reactive.Bindings;
+using System;
+using Reactive.Bindings.Extensions;
+using System.Reactive.Linq;
 
 namespace PomodoroTimer.ViewModels
 {
@@ -10,10 +18,23 @@ namespace PomodoroTimer.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
+        
+        private PoromodoTimerModel TimerModel { get; set; }
+
+        public ReadOnlyReactiveProperty<String> RemainingTime { get; }
+
+        public DelegateCommand StartCommand { get; }
 
         public MainWindowViewModel()
         {
-
+            TimerModel = new PoromodoTimerModel(DispatcherScheduler.Current);
+            StartCommand = new DelegateCommand(() => TimerModel.Start());
+            TimerModel.SetSettingTime(TimeSpan.FromSeconds(3));
+            RemainingTime = TimerModel
+                .ObserveProperty(x => x.RemainingTime)
+                .Select(x=>x.ToString(@"mm\:ss"))
+                .ToReadOnlyReactiveProperty();
         }
+
     }
 }

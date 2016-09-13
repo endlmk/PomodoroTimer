@@ -7,9 +7,15 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto">
-    <Grid>
-        <TextBlock Text="25:00" FontSize="50" Margin="199,83,199,182"/>
-        <Button x:Name="button" Content="Start" HorizontalAlignment="Left" Margin="168,192,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="button_Copy" Content="Resume" HorizontalAlignment="Left" Margin="277,192,0,0" VerticalAlignment="Top" Width="75"/>
+    <Grid VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding RemainingTime.Value}" FontSize="50" HorizontalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+            <Button x:Name="button" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Command="{Binding StartCommand}"/>
+            <Button x:Name="button_Copy" Content="Resume" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
+        </StackPanel>
     </Grid>
 </Window>
