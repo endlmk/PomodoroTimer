@@ -6,10 +6,11 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Practices.Unity;
 
 namespace PomodoroTimer.Models
 {
-    class PoromodoTimerModel : BindableBase
+    public class PoromodoTimerModel : BindableBase
     {
         ReactiveTimer _timer;
 
@@ -21,7 +22,7 @@ namespace PomodoroTimer.Models
             set { SetProperty(ref _remainingTime, value); }
         }
 
-        public PoromodoTimerModel(IScheduler scheduler)
+        public PoromodoTimerModel([Dependency] IScheduler scheduler)
         {
             _timer = new ReactiveTimer(TimeSpan.FromSeconds(1), scheduler);
             _timer.Subscribe((count)=> {

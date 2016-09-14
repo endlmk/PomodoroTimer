@@ -19,20 +19,20 @@ namespace PomodoroTimer.ViewModels
             set { SetProperty(ref _title, value); }
         }
         
-        private PoromodoTimerModel TimerModel { get; set; }
+        public PoromodoTimerModel TimerModel { private get; set; }
 
         public ReadOnlyReactiveProperty<String> RemainingTime { get; }
 
         public DelegateCommand StartCommand { get; }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel([Dependency] PoromodoTimerModel timer)
         {
-            TimerModel = new PoromodoTimerModel(DispatcherScheduler.Current);
+            TimerModel = timer;
             StartCommand = new DelegateCommand(() => TimerModel.Start());
             TimerModel.SetSettingTime(TimeSpan.FromSeconds(3));
             RemainingTime = TimerModel
                 .ObserveProperty(x => x.RemainingTime)
-                .Select(x=>x.ToString(@"mm\:ss"))
+                .Select(x => x.ToString(@"mm\:ss"))
                 .ToReadOnlyReactiveProperty();
         }
 
