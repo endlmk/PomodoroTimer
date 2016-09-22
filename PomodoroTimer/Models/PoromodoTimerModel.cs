@@ -47,7 +47,14 @@ namespace PomodoroTimer.Models
 
         public void Start()
         {
-            _timer.Start();
+            if (State == TimerState.Pausing)
+            {
+                _timer.Start(TimeSpan.FromSeconds(1));
+            }
+            else
+            {
+                _timer.Start();
+            }
             State = TimerState.Running;
         }
 

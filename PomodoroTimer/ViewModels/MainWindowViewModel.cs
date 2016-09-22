@@ -33,7 +33,7 @@ namespace PomodoroTimer.ViewModels
 
             StartCommand = TimerModel
                 .ObserveProperty(x => x.State)
-                .Select(s => s == TimerState.Stopped)
+                .Select(s => (s == TimerState.Stopped) || (s == TimerState.Pausing))
                 .ToReactiveCommand();
             StartCommand.Subscribe((x) => { TimerModel.Start(); });
 
