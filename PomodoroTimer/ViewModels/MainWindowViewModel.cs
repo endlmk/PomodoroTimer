@@ -23,12 +23,26 @@ namespace PomodoroTimer.ViewModels
 
         public ReadOnlyReactiveProperty<String> RemainingTime { get; }
 
-        public DelegateCommand StartCommand { get; }
+        public ReactiveCommand StartCommand { get; }
+
+        public ReactiveCommand PauseCommand { get; }
 
         public MainWindowViewModel([Dependency] PoromodoTimerModel timer)
         {
             TimerModel = timer;
-            StartCommand = new DelegateCommand(() => TimerModel.Start());
+
+            StartCommand = TimerModel
+                .ObserveProperty(x => x.State)
+                .Select(s => s == TimerState.Stopped)
+                .ToReactiveCommand();
+            StartCommand.Subscribe((x) => { TimerModel.Start(); });
+
+            PauseCommand = TimerModel
+                .ObserveProperty(x => x.State)
+                .Select(s => s == TimerState.Running)
+                .ToReactiveCommand();
+            PauseCommand.Subscribe((x) => { TimerModel.Pause(); });
+
             TimerModel.SetSettingTime(TimeSpan.FromSeconds(3));
             RemainingTime = TimerModel
                 .ObserveProperty(x => x.RemainingTime)

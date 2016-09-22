@@ -22,6 +22,13 @@ namespace PomodoroTimer.Models
             set { SetProperty(ref _remainingTime, value); }
         }
 
+        private TimerState _timerState;
+        public TimerState State
+        {
+            get { return _timerState; }
+            set { SetProperty(ref _timerState, value); }
+        }
+
         public PoromodoTimerModel([Dependency] IScheduler scheduler)
         {
             _timer = new ReactiveTimer(TimeSpan.FromSeconds(1), scheduler);
@@ -31,14 +38,23 @@ namespace PomodoroTimer.Models
                 {
                     _timer.Stop();
                     _timer.Reset();
+                    State = TimerState.Stopped;
                 }
             });
+
+            _timerState = TimerState.Stopped;
         }
 
         public void Start()
         {
-            RemainingTime = _settingTime;
             _timer.Start();
+            State = TimerState.Running;
+        }
+
+        public void Pause()
+        {
+            _timer.Stop();
+            State = TimerState.Pausing;
         }
 
         public void SetSettingTime(TimeSpan span)

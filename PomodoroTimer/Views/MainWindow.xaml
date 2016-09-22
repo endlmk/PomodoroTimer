@@ -7,6 +7,9 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
     <Grid VerticalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -14,8 +17,11 @@
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding RemainingTime.Value}" FontSize="50" HorizontalAlignment="Center"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-            <Button x:Name="button" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Command="{Binding StartCommand}"/>
-            <Button x:Name="button_Copy" Content="Resume" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
+            <Grid>
+                <Button Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Command="{Binding StartCommand}" Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Button Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Command="{Binding PauseCommand}" Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </Grid>
+            <Button Content="Resume" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
         </StackPanel>
     </Grid>
 </Window>
