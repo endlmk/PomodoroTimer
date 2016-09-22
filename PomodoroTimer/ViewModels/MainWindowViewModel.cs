@@ -27,21 +27,29 @@ namespace PomodoroTimer.ViewModels
 
         public ReactiveCommand PauseCommand { get; }
 
+        public ReactiveCommand SkipCommand { get; }
+
         public MainWindowViewModel([Dependency] PoromodoTimerModel timer)
         {
             TimerModel = timer;
 
             StartCommand = TimerModel
-                .ObserveProperty(x => x.State)
+                .ObserveProperty(x => x.TimerState)
                 .Select(s => (s == TimerState.Stopped) || (s == TimerState.Pausing))
                 .ToReactiveCommand();
             StartCommand.Subscribe((x) => { TimerModel.Start(); });
 
             PauseCommand = TimerModel
-                .ObserveProperty(x => x.State)
+                .ObserveProperty(x => x.TimerState)
                 .Select(s => s == TimerState.Running)
                 .ToReactiveCommand();
             PauseCommand.Subscribe((x) => { TimerModel.Pause(); });
+
+            SkipCommand = TimerModel
+                .ObserveProperty(x => x.PomodoroState)
+                .Select(p => (p == PomodoroState.PomodoroRunning) || (p == PomodoroState.RestRunning))
+                .ToReactiveCommand();
+            SkipCommand.Subscribe(x => TimerModel.Skip());
 
             TimerModel.SetSettingTime(TimeSpan.FromSeconds(3));
             RemainingTime = TimerModel

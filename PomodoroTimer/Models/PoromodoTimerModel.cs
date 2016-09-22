@@ -23,10 +23,17 @@ namespace PomodoroTimer.Models
         }
 
         private TimerState _timerState;
-        public TimerState State
+        public TimerState TimerState
         {
             get { return _timerState; }
             set { SetProperty(ref _timerState, value); }
+        }
+
+        private PomodoroState _pomodoroState;
+        public PomodoroState PomodoroState
+        {
+            get { return _pomodoroState; }
+            set { SetProperty(ref _pomodoroState, value); }
         }
 
         public PoromodoTimerModel([Dependency] IScheduler scheduler)
@@ -38,16 +45,23 @@ namespace PomodoroTimer.Models
                 {
                     _timer.Stop();
                     _timer.Reset();
-                    State = TimerState.Stopped;
+                    TimerState = TimerState.Stopped;
+                    if (PomodoroState == PomodoroState.PomodoroRunning) { PomodoroState = PomodoroState.RestReady; }
+                    else if (PomodoroState == PomodoroState.RestRunning) { PomodoroState = PomodoroState.PomodoroReady; }
+                    RemainingTime = _settingTime;
                 }
             });
 
+            _pomodoroState = PomodoroState.PomodoroReady;
             _timerState = TimerState.Stopped;
         }
 
         public void Start()
         {
-            if (State == TimerState.Pausing)
+            if(PomodoroState == PomodoroState.PomodoroReady) { PomodoroState = PomodoroState.PomodoroRunning; }
+            else if (PomodoroState == PomodoroState.RestReady) { PomodoroState = PomodoroState.RestRunning; }
+
+            if (TimerState == TimerState.Pausing)
             {
                 _timer.Start(TimeSpan.FromSeconds(1));
             }
@@ -55,13 +69,23 @@ namespace PomodoroTimer.Models
             {
                 _timer.Start();
             }
-            State = TimerState.Running;
+            TimerState = TimerState.Running;
         }
 
         public void Pause()
         {
             _timer.Stop();
-            State = TimerState.Pausing;
+            TimerState = TimerState.Pausing;
+        }
+
+        public void Skip()
+        {
+            _timer.Stop();
+            _timer.Reset();
+            if(PomodoroState == PomodoroState.PomodoroRunning) { PomodoroState = PomodoroState.PomodoroReady; }
+            else if (PomodoroState == PomodoroState.RestRunning) { PomodoroState = PomodoroState.RestReady; }
+            TimerState = TimerState.Stopped;
+            RemainingTime = _settingTime;
         }
 
         public void SetSettingTime(TimeSpan span)

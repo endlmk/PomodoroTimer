@@ -12,4 +12,12 @@ namespace PomodoroTimer.Models
         Running,
         Pausing,
     };
+
+    public enum PomodoroState
+    {
+        PomodoroReady,
+        PomodoroRunning,
+        RestReady,
+        RestRunning,
+    };
 }
