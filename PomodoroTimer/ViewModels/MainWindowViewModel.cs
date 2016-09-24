@@ -7,6 +7,7 @@ using Reactive.Bindings;
 using System;
 using Reactive.Bindings.Extensions;
 using System.Reactive.Linq;
+using System.Windows.Media;
 
 namespace PomodoroTimer.ViewModels
 {
@@ -28,6 +29,8 @@ namespace PomodoroTimer.ViewModels
         public ReactiveCommand PauseCommand { get; }
 
         public ReactiveCommand SkipCommand { get; }
+
+        public ReadOnlyReactiveProperty<SolidColorBrush> DispColor { get; }
 
         public MainWindowViewModel([Dependency] PoromodoTimerModel timer)
         {
@@ -55,6 +58,16 @@ namespace PomodoroTimer.ViewModels
                 .ObserveProperty(x => x.RemainingTime)
                 .Select(x => x.ToString(@"mm\:ss"))
                 .ToReadOnlyReactiveProperty();
+
+            DispColor = TimerModel
+                .ObserveProperty(x => x.JobState)
+                .Select(x =>
+                {
+                    if (x == JobState.Pomodoro) { return Brushes.Red; }
+                    else { return Brushes.Blue; }
+                })
+                .ToReadOnlyReactiveProperty();
+
         }
 
     }

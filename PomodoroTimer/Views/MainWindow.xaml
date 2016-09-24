@@ -15,7 +15,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding RemainingTime.Value}" FontSize="50" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding RemainingTime.Value}" FontSize="50" HorizontalAlignment="Center" Foreground="{Binding DispColor.Value}"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
             <Grid>
                 <Button Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Command="{Binding StartCommand}" Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
