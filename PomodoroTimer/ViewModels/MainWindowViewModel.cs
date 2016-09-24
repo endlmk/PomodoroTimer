@@ -51,7 +51,6 @@ namespace PomodoroTimer.ViewModels
                 .ToReactiveCommand();
             SkipCommand.Subscribe(x => TimerModel.Skip());
 
-            TimerModel.SetSettingTime(TimeSpan.FromSeconds(3));
             RemainingTime = TimerModel
                 .ObserveProperty(x => x.RemainingTime)
                 .Select(x => x.ToString(@"mm\:ss"))

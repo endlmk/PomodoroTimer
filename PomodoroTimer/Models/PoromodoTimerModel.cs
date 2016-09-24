@@ -14,7 +14,9 @@ namespace PomodoroTimer.Models
     {
         ReactiveTimer _timer;
 
-        private TimeSpan _settingTime = TimeSpan.Zero;
+        private TimeSpan _timerSpan = TimeSpan.Zero;
+        private TimeSpan _pomodoroSpan = TimeSpan.Zero;
+        private TimeSpan _restSpan = TimeSpan.Zero;
         private TimeSpan _remainingTime = TimeSpan.Zero;
         public TimeSpan RemainingTime
         {
@@ -36,30 +38,48 @@ namespace PomodoroTimer.Models
             set { SetProperty(ref _pomodoroState, value); }
         }
 
-        public PoromodoTimerModel([Dependency] IScheduler scheduler)
+        public PoromodoTimerModel(IScheduler scheduler, TimeSpan pomodoroSpan, TimeSpan restSpan)
         {
             _timer = new ReactiveTimer(TimeSpan.FromSeconds(1), scheduler);
             _timer.Subscribe((count)=> {
-                RemainingTime = _settingTime - TimeSpan.FromSeconds(count);
+                RemainingTime = _timerSpan - TimeSpan.FromSeconds(count);
                 if(RemainingTime == TimeSpan.Zero)
                 {
                     _timer.Stop();
                     _timer.Reset();
                     TimerState = TimerState.Stopped;
-                    if (PomodoroState == PomodoroState.PomodoroRunning) { PomodoroState = PomodoroState.RestReady; }
-                    else if (PomodoroState == PomodoroState.RestRunning) { PomodoroState = PomodoroState.PomodoroReady; }
-                    RemainingTime = _settingTime;
+                    if (PomodoroState == PomodoroState.PomodoroRunning)
+                    {
+                        PomodoroState = PomodoroState.RestReady;
+                        _timerSpan = _restSpan;
+                    }
+                    else if (PomodoroState == PomodoroState.RestRunning)
+                    {
+                        PomodoroState = PomodoroState.PomodoroReady;
+                        _timerSpan = _pomodoroSpan;
+                    }
+                    RemainingTime = _timerSpan;
                 }
             });
 
+            _pomodoroSpan = pomodoroSpan;
+            _restSpan = restSpan;
+            _timerSpan = _pomodoroSpan;
+            RemainingTime = _timerSpan;
             _pomodoroState = PomodoroState.PomodoroReady;
             _timerState = TimerState.Stopped;
         }
 
         public void Start()
         {
-            if(PomodoroState == PomodoroState.PomodoroReady) { PomodoroState = PomodoroState.PomodoroRunning; }
-            else if (PomodoroState == PomodoroState.RestReady) { PomodoroState = PomodoroState.RestRunning; }
+            if(PomodoroState == PomodoroState.PomodoroReady)
+            {
+                PomodoroState = PomodoroState.PomodoroRunning;
+            }
+            else if (PomodoroState == PomodoroState.RestReady)
+            {
+                PomodoroState = PomodoroState.RestRunning;
+            }
 
             if (TimerState == TimerState.Pausing)
             {
@@ -82,16 +102,12 @@ namespace PomodoroTimer.Models
         {
             _timer.Stop();
             _timer.Reset();
-            if(PomodoroState == PomodoroState.PomodoroRunning) { PomodoroState = PomodoroState.PomodoroReady; }
-            else if (PomodoroState == PomodoroState.RestRunning) { PomodoroState = PomodoroState.RestReady; }
-            TimerState = TimerState.Stopped;
-            RemainingTime = _settingTime;
-        }
 
-        public void SetSettingTime(TimeSpan span)
-        {
-            _settingTime = span;
-            RemainingTime = _settingTime;
+            PomodoroState = PomodoroState.PomodoroReady;
+            _timerSpan = _pomodoroSpan;
+            RemainingTime = _timerSpan;
+
+            TimerState = TimerState.Stopped;
         }
     }
 }
