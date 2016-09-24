@@ -31,11 +31,11 @@ namespace PomodoroTimer.Models
             set { SetProperty(ref _timerState, value); }
         }
 
-        private PomodoroState _pomodoroState;
-        public PomodoroState PomodoroState
+        private JobState _jobState;
+        public JobState JobState
         {
-            get { return _pomodoroState; }
-            set { SetProperty(ref _pomodoroState, value); }
+            get { return _jobState; }
+            set { SetProperty(ref _jobState, value); }
         }
 
         public PoromodoTimerModel(IScheduler scheduler, TimeSpan pomodoroSpan, TimeSpan restSpan)
@@ -47,40 +47,42 @@ namespace PomodoroTimer.Models
                 {
                     _timer.Stop();
                     _timer.Reset();
-                    TimerState = TimerState.Stopped;
-                    if (PomodoroState == PomodoroState.PomodoroRunning)
+                    if (JobState == JobState.Pomodoro)
                     {
-                        PomodoroState = PomodoroState.RestReady;
-                        _timerSpan = _restSpan;
+                        JobState = JobState.Rest;
                     }
-                    else if (PomodoroState == PomodoroState.RestRunning)
+                    else if(JobState == JobState.Rest)
                     {
-                        PomodoroState = PomodoroState.PomodoroReady;
-                        _timerSpan = _pomodoroSpan;
+                        JobState = JobState.Pomodoro;
                     }
-                    RemainingTime = _timerSpan;
+
+                    ResetTimer();
                 }
             });
 
             _pomodoroSpan = pomodoroSpan;
             _restSpan = restSpan;
-            _timerSpan = _pomodoroSpan;
+
+            _jobState = JobState.Pomodoro;
+            ResetTimer();
+        }
+
+        private void ResetTimer()
+        {
+            TimerState = TimerState.Ready;
+            if (JobState == JobState.Pomodoro)
+            {
+                _timerSpan = _pomodoroSpan;
+            }
+            else if (JobState == JobState.Rest)
+            {
+                _timerSpan = _restSpan;
+            }
             RemainingTime = _timerSpan;
-            _pomodoroState = PomodoroState.PomodoroReady;
-            _timerState = TimerState.Stopped;
         }
 
         public void Start()
         {
-            if(PomodoroState == PomodoroState.PomodoroReady)
-            {
-                PomodoroState = PomodoroState.PomodoroRunning;
-            }
-            else if (PomodoroState == PomodoroState.RestReady)
-            {
-                PomodoroState = PomodoroState.RestRunning;
-            }
-
             if (TimerState == TimerState.Pausing)
             {
                 _timer.Start(TimeSpan.FromSeconds(1));
@@ -102,12 +104,9 @@ namespace PomodoroTimer.Models
         {
             _timer.Stop();
             _timer.Reset();
-
-            PomodoroState = PomodoroState.PomodoroReady;
-            _timerSpan = _pomodoroSpan;
-            RemainingTime = _timerSpan;
-
-            TimerState = TimerState.Stopped;
+            
+            JobState = JobState.Pomodoro;
+            ResetTimer();
         }
     }
 }

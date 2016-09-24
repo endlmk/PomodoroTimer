@@ -8,16 +8,14 @@ namespace PomodoroTimer.Models
 {
     public enum TimerState
     {
-        Stopped,
+        Ready,
         Running,
         Pausing,
     };
 
-    public enum PomodoroState
+    public enum JobState
     {
-        PomodoroReady,
-        PomodoroRunning,
-        RestReady,
-        RestRunning,
+        Pomodoro,
+        Rest,
     };
 }
