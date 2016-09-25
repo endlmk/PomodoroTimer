@@ -7,6 +7,8 @@ using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 namespace PomodoroTimer.Models
 {
@@ -38,6 +40,18 @@ namespace PomodoroTimer.Models
             set { SetProperty(ref _jobState, value); }
         }
 
+        private Subject<string> _modelSubject = new Subject<string>();
+
+        public IObservable<string> TimerFinished
+        {
+            get { return this._modelSubject.AsObservable(); }
+        }
+
+        public void NotifyTimerFinished(string message)
+        {
+            this._modelSubject.OnNext(message);
+        }
+
         public PoromodoTimerModel(IScheduler scheduler, TimeSpan pomodoroSpan, TimeSpan restSpan)
         {
             _timer = new ReactiveTimer(TimeSpan.FromSeconds(1), scheduler);
@@ -47,16 +61,20 @@ namespace PomodoroTimer.Models
                 {
                     _timer.Stop();
                     _timer.Reset();
+                    string message = string.Empty;
                     if (JobState == JobState.Pomodoro)
                     {
                         JobState = JobState.Rest;
+                        message = "ポモドーロ終了！";
                     }
                     else if(JobState == JobState.Rest)
                     {
                         JobState = JobState.Pomodoro;
+                        message = "休憩終了！";
                     }
 
                     ResetTimer();
+                    NotifyTimerFinished(message);
                 }
             });
 

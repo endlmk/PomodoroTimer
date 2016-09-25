@@ -3,6 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:interaction="clr-namespace:PomodoroTimer.Interaction"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="{Binding Title}" Height="350" Width="525"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -15,6 +18,13 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        <tb:TaskbarIcon x:Name="NotifyIcon">
+            <i:Interaction.Triggers>
+                <prism:InteractionRequestTrigger SourceObject="{Binding NotificationRequest, Mode=OneWay}">
+                    <interaction:ShowBalloonWindowAction/>
+                </prism:InteractionRequestTrigger>
+            </i:Interaction.Triggers>
+        </tb:TaskbarIcon>
         <TextBlock Text="{Binding RemainingTime.Value}" FontSize="50" HorizontalAlignment="Center" Foreground="{Binding DispColor.Value}"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
             <Grid>

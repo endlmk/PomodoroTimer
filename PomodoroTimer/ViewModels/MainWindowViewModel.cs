@@ -8,6 +8,7 @@ using System;
 using Reactive.Bindings.Extensions;
 using System.Reactive.Linq;
 using System.Windows.Media;
+using Prism.Interactivity.InteractionRequest;
 
 namespace PomodoroTimer.ViewModels
 {
@@ -31,6 +32,8 @@ namespace PomodoroTimer.ViewModels
         public ReactiveCommand SkipCommand { get; }
 
         public ReadOnlyReactiveProperty<SolidColorBrush> DispColor { get; }
+
+        public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
 
         public MainWindowViewModel([Dependency] PoromodoTimerModel timer)
         {
@@ -68,6 +71,11 @@ namespace PomodoroTimer.ViewModels
                 })
                 .ToReadOnlyReactiveProperty();
 
+           TimerModel.TimerFinished.Subscribe((message) =>
+           {
+               this.NotificationRequest.Raise(new Notification { Title = "Alert", Content = message });
+           }
+           );
         }
 
     }
