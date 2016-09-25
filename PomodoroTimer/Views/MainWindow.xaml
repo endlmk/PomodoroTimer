@@ -18,7 +18,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <tb:TaskbarIcon x:Name="NotifyIcon">
+        <tb:TaskbarIcon x:Name="NotifyIcon" IconSource ="/Resources/timer.ico">
             <i:Interaction.Triggers>
                 <prism:InteractionRequestTrigger SourceObject="{Binding NotificationRequest, Mode=OneWay}">
                     <interaction:ShowBalloonWindowAction/>
