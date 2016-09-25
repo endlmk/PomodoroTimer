@@ -140,7 +140,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interaction\ShowBalloonWindowAction.cs" />
-    <Compile Include="Models\PoromodoTimerModel.cs" />
+    <Compile Include="Models\PomodoroTimerModel.cs" />
     <Compile Include="Models\TimerState.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">

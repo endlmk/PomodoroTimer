@@ -24,7 +24,7 @@ namespace PomodoroTimer
             base.OnStartup(e);
 
             Container.RegisterType<IScheduler, DispatcherScheduler>(new InjectionConstructor(App.Current.Dispatcher));
-            Container.RegisterType<PoromodoTimerModel>(new InjectionConstructor(Container.Resolve<IScheduler>(), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2)));
+            Container.RegisterType<PomodoroTimerModel>(new InjectionConstructor(Container.Resolve<IScheduler>(), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2)));
             ViewModelLocationProvider.SetDefaultViewModelFactory(x => this.Container.Resolve(x));
             this.Container.Resolve<MainWindow>().Show();
         }

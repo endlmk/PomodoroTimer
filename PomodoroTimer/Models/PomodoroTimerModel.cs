@@ -12,7 +12,7 @@ using System.Reactive.Linq;
 
 namespace PomodoroTimer.Models
 {
-    public class PoromodoTimerModel : BindableBase
+    public class PomodoroTimerModel : BindableBase
     {
         ReactiveTimer _timer;
 
@@ -52,7 +52,7 @@ namespace PomodoroTimer.Models
             this._modelSubject.OnNext(message);
         }
 
-        public PoromodoTimerModel(IScheduler scheduler, TimeSpan pomodoroSpan, TimeSpan restSpan)
+        public PomodoroTimerModel(IScheduler scheduler, TimeSpan pomodoroSpan, TimeSpan restSpan)
         {
             _timer = new ReactiveTimer(TimeSpan.FromSeconds(1), scheduler);
             _timer.Subscribe((count)=> {

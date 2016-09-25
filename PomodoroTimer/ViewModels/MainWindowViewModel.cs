@@ -21,7 +21,7 @@ namespace PomodoroTimer.ViewModels
             set { SetProperty(ref _title, value); }
         }
         
-        public PoromodoTimerModel TimerModel { private get; set; }
+        public PomodoroTimerModel TimerModel { private get; set; }
 
         public ReadOnlyReactiveProperty<String> RemainingTime { get; }
 
@@ -35,7 +35,7 @@ namespace PomodoroTimer.ViewModels
 
         public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
 
-        public MainWindowViewModel([Dependency] PoromodoTimerModel timer)
+        public MainWindowViewModel([Dependency] PomodoroTimerModel timer)
         {
             TimerModel = timer;
 
