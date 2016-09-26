@@ -52,6 +52,13 @@ namespace PomodoroTimer.Models
             this._modelSubject.OnNext(message);
         }
 
+        private uint _pomodoroCount = 0;
+        public uint PomodoroCount
+        {
+            get { return _pomodoroCount; }
+            set { SetProperty(ref _pomodoroCount, value); }
+        }
+
         public PomodoroTimerModel(IScheduler scheduler, TimeSpan pomodoroSpan, TimeSpan restSpan)
         {
             _timer = new ReactiveTimer(TimeSpan.FromSeconds(1), scheduler);
@@ -66,6 +73,7 @@ namespace PomodoroTimer.Models
                     {
                         JobState = JobState.Rest;
                         message = "ポモドーロ終了！";
+                        ++PomodoroCount;
                     }
                     else if(JobState == JobState.Rest)
                     {

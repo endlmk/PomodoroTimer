@@ -35,6 +35,8 @@ namespace PomodoroTimer.ViewModels
 
         public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
 
+        public ReadOnlyReactiveProperty<uint> PomodoroCount { get; }
+
         public MainWindowViewModel([Dependency] PomodoroTimerModel timer)
         {
             TimerModel = timer;
@@ -71,11 +73,16 @@ namespace PomodoroTimer.ViewModels
                 })
                 .ToReadOnlyReactiveProperty();
 
-           TimerModel.TimerFinished.Subscribe((message) =>
-           {
-               this.NotificationRequest.Raise(new Notification { Title = "Alert", Content = message });
-           }
-           );
+            TimerModel.TimerFinished.Subscribe((message) =>
+            {
+                this.NotificationRequest.Raise(new Notification { Title = "Alert", Content = message });
+            }
+            );
+
+            PomodoroCount = TimerModel
+                .ObserveProperty(x => x.PomodoroCount)
+                .ToReadOnlyReactiveProperty();
+        
         }
 
     }

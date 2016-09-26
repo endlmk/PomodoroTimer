@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <tb:TaskbarIcon x:Name="NotifyIcon" IconSource ="/Resources/timer.ico">
             <i:Interaction.Triggers>
@@ -32,6 +33,10 @@
                 <Button Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Command="{Binding PauseCommand}" Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </Grid>
             <Button Content="Skip" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Command="{Binding SkipCommand}" Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="PoodoroCount:"/>
+            <TextBlock Text="{Binding PomodoroCount.Value}"/>
         </StackPanel>
     </Grid>
 </Window>
