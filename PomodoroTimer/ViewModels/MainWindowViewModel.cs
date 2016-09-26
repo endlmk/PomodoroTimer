@@ -37,7 +37,7 @@ namespace PomodoroTimer.ViewModels
 
         public ReadOnlyReactiveProperty<uint> PomodoroCount { get; }
 
-        public MainWindowViewModel([Dependency] PomodoroTimerModel timer)
+        public MainWindowViewModel(PomodoroTimerModel timer)
         {
             TimerModel = timer;
 
@@ -47,16 +47,17 @@ namespace PomodoroTimer.ViewModels
                 .ToReactiveCommand();
             StartCommand.Subscribe((x) => { TimerModel.Start(); });
 
+            //ToReactiveCommandの引数がfalseならCanExecuteの初期値はfalseとなる。
             PauseCommand = TimerModel
                 .ObserveProperty(x => x.TimerState)
                 .Select(s => s == TimerState.Running)
-                .ToReactiveCommand();
+                .ToReactiveCommand(false);
             PauseCommand.Subscribe((x) => { TimerModel.Pause(); });
 
             SkipCommand = TimerModel
                 .ObserveProperty(x => x.TimerState)
                 .Select(s => (s != TimerState.Ready))
-                .ToReactiveCommand();
+                .ToReactiveCommand(false);
             SkipCommand.Subscribe(x => TimerModel.Skip());
 
             RemainingTime = TimerModel
