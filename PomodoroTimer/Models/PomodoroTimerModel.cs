@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace PomodoroTimer.Models
 {
@@ -20,6 +22,7 @@ namespace PomodoroTimer.Models
         private TimeSpan _pomodoroSpan = TimeSpan.Zero;
         private TimeSpan _restSpan = TimeSpan.Zero;
         private TimeSpan _remainingTime = TimeSpan.Zero;
+        private List<DateTime> _pomodoroStroage;
         public TimeSpan RemainingTime
         {
             get { return _remainingTime; }
@@ -74,6 +77,8 @@ namespace PomodoroTimer.Models
                         JobState = JobState.Rest;
                         message = "ポモドーロ終了！";
                         ++PomodoroCount;
+                        _pomodoroStroage.Add(DateTime.Now);
+                        File.WriteAllText("PomodoroStorage.json", JsonConvert.SerializeObject(_pomodoroStroage));
                     }
                     else if(JobState == JobState.Rest)
                     {
@@ -91,6 +96,19 @@ namespace PomodoroTimer.Models
 
             _jobState = JobState.Pomodoro;
             ResetTimer();
+
+            try
+            {
+                var str = File.ReadAllText("PomodoroStorage.json");
+                _pomodoroStroage = JsonConvert.DeserializeObject<List<DateTime>>(str);
+            }
+            catch
+            {
+                _pomodoroStroage = new List<DateTime>();
+            }
+
+
+            PomodoroCount = (uint)_pomodoroStroage.Count(x => x.Date == DateTime.Now.Date);
         }
 
         private void ResetTimer()
