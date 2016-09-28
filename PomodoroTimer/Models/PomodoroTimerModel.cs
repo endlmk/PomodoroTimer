@@ -11,6 +11,9 @@ using System.Reactive.Subjects;
 using System.Reactive.Linq;
 using System.IO;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using Reactive.Bindings.Extensions;
+using Reactive.Bindings.Helpers;
 
 namespace PomodoroTimer.Models
 {
@@ -22,7 +25,7 @@ namespace PomodoroTimer.Models
         private TimeSpan _pomodoroSpan = TimeSpan.Zero;
         private TimeSpan _restSpan = TimeSpan.Zero;
         private TimeSpan _remainingTime = TimeSpan.Zero;
-        private List<DateTime> _pomodoroStroage;
+        private ObservableCollection<DateTime> _pomodoroStroage;
         public TimeSpan RemainingTime
         {
             get { return _remainingTime; }
@@ -76,7 +79,6 @@ namespace PomodoroTimer.Models
                     {
                         JobState = JobState.Rest;
                         message = "ポモドーロ終了！";
-                        ++PomodoroCount;
                         _pomodoroStroage.Add(DateTime.Now);
                         File.WriteAllText("PomodoroStorage.json", JsonConvert.SerializeObject(_pomodoroStroage));
                     }
@@ -100,15 +102,16 @@ namespace PomodoroTimer.Models
             try
             {
                 var str = File.ReadAllText("PomodoroStorage.json");
-                _pomodoroStroage = JsonConvert.DeserializeObject<List<DateTime>>(str);
+                _pomodoroStroage = JsonConvert.DeserializeObject<ObservableCollection<DateTime>>(str);
             }
             catch
             {
-                _pomodoroStroage = new List<DateTime>();
+                _pomodoroStroage = new ObservableCollection<DateTime>();
             }
-
-
-            PomodoroCount = (uint)_pomodoroStroage.Count(x => x.Date == DateTime.Now.Date);
+            
+            _pomodoroStroage.ObserveProperty(x => x.Count).Subscribe((count) => {
+                PomodoroCount = (uint)_pomodoroStroage.Count(x => x.Date == date);
+            });
         }
 
         private void ResetTimer()
