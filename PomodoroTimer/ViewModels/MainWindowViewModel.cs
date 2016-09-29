@@ -35,7 +35,7 @@ namespace PomodoroTimer.ViewModels
 
         public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
 
-        public ReadOnlyReactiveProperty<uint> PomodoroCount { get; }
+        public ReadOnlyReactiveProperty<int> PomodoroCount { get; }
 
         public MainWindowViewModel(PomodoroTimerModel timer)
         {

@@ -144,6 +144,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interaction\ShowBalloonWindowAction.cs" />
+    <Compile Include="Models\IPomodoroCounter.cs" />
+    <Compile Include="Models\PomodoroCountFile.cs" />
     <Compile Include="Models\PomodoroTimerModel.cs" />
     <Compile Include="Models\TimerState.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
